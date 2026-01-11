@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RITIVIK | Digital Experience Designer</title>
     
-    <!-- Fonts -->
+    <!-- Premium Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&family=Instrument+Serif:italic@0;1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Instrument+Serif:italic@0;1&display=swap" rel="stylesheet">
     
     <!-- Scripts -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -18,17 +18,29 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#EAB308', // Gold/Yellow
-                        dark: '#0A0A0A',
-                        light: '#F5F5F7',
-                        surface: {
-                            dark: '#141414',
-                            light: '#FFFFFF'
-                        }
+                        primary: '#EAB308', 
+                        dark: '#050505',
+                        light: '#FAFAFA',
+                        accent: '#18181b'
                     },
                     fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Bricolage Grotesque', 'sans-serif'],
                         serif: ['Instrument Serif', 'serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'reveal': 'reveal 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        reveal: {
+                            '0%': { transform: 'translateY(100%)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
                     }
                 }
             }
@@ -36,302 +48,337 @@
     </script>
 
     <style>
-        /* Grain Overlay */
-        .grain::before {
+        /* Grain Effect */
+        .grain::after {
             content: "";
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: -150%; left: -150%; width: 300%; height: 300%;
             pointer-events: none;
             z-index: 9999;
-            opacity: 0.03;
+            opacity: 0.04;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            animation: grain 8s steps(10) infinite;
+        }
+        @keyframes grain {
+            0%, 100% { transform:translate(0, 0) }
+            10% { transform:translate(-5%, -10%) }
+            30% { transform:translate(3%, -15%) }
+            50% { transform:translate(12%, 9%) }
+            70% { transform:translate(9%, 4%) }
+            90% { transform:translate(-10%, 10%) }
         }
 
-        .dark .grain::before { opacity: 0.05; }
+        .dark .grain::after { opacity: 0.07; }
 
-        /* Smooth Theme Transitions */
-        body {
-            transition: background-color 0.5s ease, color 0.5s ease;
+        /* Custom Cursor (Desktop Only) */
+        #cursor {
+            width: 20px;
+            height: 20px;
+            background: #EAB308;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transition: transform 0.15s ease-out;
+            display: none;
         }
+        @media (min-width: 1024px) { #cursor { display: block; } }
 
-        /* Hide Scrollbar */
-        ::-webkit-scrollbar { width: 4px; }
+        .reveal-container { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+        
+        /* Modern Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { 
-            background: #888; 
-            border-radius: 10px; 
-            transition: background 0.3s;
-        }
-        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: #444; }
 
-        /* Typing Cursor */
-        .cursor::after {
-            content: "|";
-            animation: blink 1s infinite;
-            color: #EAB308;
-            margin-left: 2px;
-        }
-        @keyframes blink { 50% { opacity: 0; } }
-
-        /* Project Image Pan */
-        .project-card:hover .project-image {
-            transform: scale(1.08);
-        }
-
-        .vertical-text {
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-        }
+        /* Magnetic Button feel */
+        .btn-hover { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .btn-hover:hover { transform: scale(1.05); }
     </style>
 </head>
 <body class="bg-light text-zinc-900 dark:bg-dark dark:text-zinc-100 font-sans grain antialiased overflow-x-hidden">
 
+    <div id="cursor"></div>
+
     <!-- Navigation -->
     <nav id="nav" class="fixed top-0 w-full z-[100] transition-all duration-500 py-6 px-6 md:px-12">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-4 group cursor-pointer">
-                <div class="relative w-10 h-10 overflow-hidden rounded-full border border-zinc-200 dark:border-zinc-800">
-                    <img src="proj_0.png" alt="Ritivik" class="object-cover w-full h-full grayscale group-hover:grayscale-0 transition-all duration-500" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100&auto=format&fit=crop'">
+            <div class="flex items-center gap-3 group cursor-pointer">
+                <div class="relative w-10 h-10 overflow-hidden rounded-xl bg-zinc-200 dark:bg-zinc-800">
+                    <img src="proj_0.png" alt="Ritivik" class="object-cover w-full h-full grayscale group-hover:grayscale-0 transition-all duration-500" onerror="this.src='https://images.unsplash.com/photo-1599305090598-fe179d501227?q=80&w=100&auto=format&fit=crop'">
                 </div>
-                <a href="#" class="font-bold tracking-tighter text-xl flex items-baseline">
-                    <span>RITIVIK</span>
-                    <span class="text-primary ml-1 font-light italic font-serif">K.</span>
-                </a>
+                <div class="flex flex-col">
+                    <span class="font-display font-bold tracking-tight text-lg leading-none">RITIVIK</span>
+                    <span class="text-[10px] uppercase tracking-widest text-zinc-400 font-medium">Experience Designer</span>
+                </div>
             </div>
 
-            <!-- Desktop Links -->
-            <div class="hidden md:flex items-center gap-10">
-                <div class="flex gap-8 text-[11px] uppercase tracking-[0.2em] font-medium text-zinc-500">
-                    <a href="#about" class="hover:text-primary transition">About</a>
-                    <a href="#work" class="hover:text-primary transition">Work</a>
-                    <a href="#contact" class="hover:text-primary transition">Contact</a>
-                </div>
-                
-                <!-- Theme Toggle -->
-                <button id="theme-toggle" class="p-2 rounded-full border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors">
-                    <svg id="theme-toggle-dark-icon" class="hidden w-4 h-4" fill="currentColor" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M10 100a90 90 0 1 0 180 0 90 90 0 0 0-180 0Z"/></svg>
-                    <svg id="theme-toggle-light-icon" class="hidden w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+            <div class="hidden md:flex items-center gap-2 p-1 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-2xl rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50">
+                <a href="#about" class="px-5 py-2 text-xs font-semibold uppercase tracking-wider hover:text-primary transition">About</a>
+                <a href="#work" class="px-5 py-2 text-xs font-semibold uppercase tracking-wider hover:text-primary transition">Work</a>
+                <a href="#contact" class="px-5 py-2 text-xs font-semibold uppercase tracking-wider hover:text-primary transition">Contact</a>
+                <div class="w-px h-4 bg-zinc-200 dark:bg-zinc-800 mx-2"></div>
+                <button id="theme-toggle" class="p-2 text-zinc-500 hover:text-primary transition-colors">
+                    <svg id="theme-toggle-dark-icon" class="hidden w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                    <svg id="theme-toggle-light-icon" class="hidden w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z"></path></svg>
                 </button>
             </div>
 
-            <!-- Mobile Menu Btn -->
-            <button class="md:hidden text-2xl" onclick="toggleMobileMenu()">☰</button>
+            <button class="md:hidden text-2xl" onclick="toggleMobileMenu()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+            </button>
         </div>
     </nav>
 
-    <!-- Mobile Menu -->
-    <div id="mobile-menu" class="hidden fixed inset-0 z-[150] bg-light dark:bg-dark p-10 flex flex-col justify-center gap-8 text-4xl font-serif italic">
-        <button class="absolute top-10 right-10 text-2xl" onclick="toggleMobileMenu()">✕</button>
-        <a href="#about" onclick="toggleMobileMenu()">About</a>
-        <a href="#work" onclick="toggleMobileMenu()">Work</a>
-        <a href="#contact" onclick="toggleMobileMenu()">Contact</a>
-        <button id="mobile-theme-toggle" class="text-sm uppercase tracking-widest mt-10">Switch Theme</button>
-    </div>
-
-    <!-- Hero -->
-    <main id="home" class="min-h-screen flex flex-col justify-center px-6 md:px-12 relative">
-        <div class="max-w-7xl mx-auto w-full relative">
-            <!-- Background Shape -->
-            <div class="absolute -top-40 -right-20 w-[40vw] h-[40vw] bg-primary/10 blur-[120px] rounded-full -z-10"></div>
+    <!-- Hero Section -->
+    <header id="home" class="min-h-screen flex flex-col justify-center px-6 md:px-12 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto w-full relative z-10">
+            <div class="reveal-container mb-4">
+                <span class="inline-block text-[11px] uppercase tracking-[0.4em] font-bold text-primary animate-reveal">Digital Experience Studio</span>
+            </div>
             
-            <span class="inline-block text-[10px] uppercase tracking-[0.5em] font-bold text-primary mb-6 animate-pulse">Design Studio • Patna</span>
-            
-            <h1 class="text-[12vw] md:text-[8vw] font-bold leading-[0.85] tracking-tighter mb-8">
-                CREATIVE <br> 
-                <span class="font-serif italic font-medium text-zinc-400 dark:text-zinc-600 hover:text-primary transition-all duration-1000">VISUALS</span>
+            <h1 class="font-display text-[14vw] md:text-[10vw] font-extrabold leading-[0.85] tracking-tighter mb-10">
+                <div class="reveal-container">
+                    <div class="animate-reveal" style="animation-delay: 0.1s;">CREATING</div>
+                </div>
+                <div class="reveal-container">
+                    <div class="animate-reveal italic text-zinc-300 dark:text-zinc-800 hover:text-primary transition-colors duration-700" style="animation-delay: 0.2s;">UNFORGETTABLE</div>
+                </div>
+                <div class="reveal-container">
+                    <div class="animate-reveal" style="animation-delay: 0.3s;">VISUALS<span class="text-primary">.</span></div>
+                </div>
             </h1>
             
-            <div class="flex flex-col md:flex-row md:items-end justify-between gap-10">
-                <p class="text-xl md:text-3xl font-light text-zinc-500 max-w-2xl leading-tight">
-                    Ritivik Kumar is a designer transforming complex ideas into <br class="hidden md:block"> 
-                    <span id="typing" class="text-zinc-900 dark:text-white font-medium cursor"></span>
-                </p>
-                
-                <div class="flex gap-4">
-                    <a href="#work" class="px-8 py-4 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-primary dark:hover:bg-primary transition-all duration-500 transform hover:-translate-y-1">View Work</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="absolute bottom-10 left-12 hidden md:block">
-            <div class="vertical-text text-[10px] uppercase tracking-widest text-zinc-400 animate-bounce">
-                Scroll to explore —
-            </div>
-        </div>
-    </main>
-
-    <!-- About -->
-    <section id="about" class="py-32 px-6 md:px-12 bg-zinc-50 dark:bg-zinc-900/30">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20">
-            <div>
-                <h2 class="text-sm uppercase tracking-[0.3em] font-bold text-primary mb-10">The Philosophy</h2>
-                <p class="text-4xl md:text-5xl font-serif italic leading-tight mb-10">
-                    "I believe design should be felt before it is read. It's about creating a resonance between the brand and the viewer."
-                </p>
-                <div class="grid grid-cols-2 gap-8 pt-10 border-t border-zinc-200 dark:border-zinc-800">
-                    <div>
-                        <span class="block text-[10px] uppercase text-zinc-400 mb-2">Experience</span>
-                        <span class="text-lg font-medium">1.5 Years Professional</span>
-                    </div>
-                    <div>
-                        <span class="block text-[10px] uppercase text-zinc-400 mb-2">Location</span>
-                        <span class="text-lg font-medium">Remote / Patna, IN</span>
-                    </div>
-                </div>
-            </div>
-            <div class="flex flex-col justify-end">
-                <p class="text-xl text-zinc-500 font-light leading-relaxed mb-10">
-                    A multidisciplinary designer focusing on minimalist brand identities and high-conversion digital assets. I blend technical B.Tech precision with artistic intuition to deliver visuals that stick.
-                </p>
-                <div class="flex flex-wrap gap-2">
-                    <span class="px-4 py-2 border border-zinc-200 dark:border-zinc-800 rounded-full text-[10px] uppercase tracking-wider hover:border-primary transition cursor-default">Identity Design</span>
-                    <span class="px-4 py-2 border border-zinc-200 dark:border-zinc-800 rounded-full text-[10px] uppercase tracking-wider hover:border-primary transition cursor-default">UI/UX Systems</span>
-                    <span class="px-4 py-2 border border-zinc-200 dark:border-zinc-800 rounded-full text-[10px] uppercase tracking-wider hover:border-primary transition cursor-default">Motion Direction</span>
-                    <span class="px-4 py-2 border border-zinc-200 dark:border-zinc-800 rounded-full text-[10px] uppercase tracking-wider hover:border-primary transition cursor-default">Product Strategy</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Work -->
-    <section id="work" class="py-32 px-6 md:px-12">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-baseline mb-20">
-                <h2 class="text-5xl md:text-7xl font-bold tracking-tighter italic font-serif">Selected Archive</h2>
-                <span class="text-zinc-400 uppercase text-[10px] tracking-widest mt-4 md:mt-0">Gallery 01 / 23—24</span>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-24">
-                <!-- Card 1 -->
-                <div class="project-card group cursor-pointer">
-                    <div class="aspect-[4/5] bg-zinc-100 dark:bg-zinc-900 rounded-2xl overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=1200" class="project-image w-full h-full object-cover transition-transform duration-1000 grayscale group-hover:grayscale-0">
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-                            <span class="text-white text-xs font-bold uppercase tracking-widest border border-white/30 px-6 py-3 rounded-full backdrop-blur-md">View Identity</span>
-                        </div>
-                    </div>
-                    <div class="mt-8 flex justify-between items-start">
-                        <div>
-                            <h3 class="text-2xl font-bold tracking-tight mb-1">Modern Marks</h3>
-                            <p class="text-zinc-500 text-sm">Visual Identity & Typography</p>
-                        </div>
-                        <span class="text-[10px] font-bold text-primary px-3 py-1 bg-primary/10 rounded-full">2024</span>
-                    </div>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="project-card group cursor-pointer md:mt-24">
-                    <div class="aspect-[4/5] bg-zinc-100 dark:bg-zinc-900 rounded-2xl overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1586717791821-3f44a563eb4c?q=80&w=1200" class="project-image w-full h-full object-cover transition-transform duration-1000 grayscale group-hover:grayscale-0">
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-                            <span class="text-white text-xs font-bold uppercase tracking-widest border border-white/30 px-6 py-3 rounded-full backdrop-blur-md">View Case Study</span>
-                        </div>
-                    </div>
-                    <div class="mt-8 flex justify-between items-start">
-                        <div>
-                            <h3 class="text-2xl font-bold tracking-tight mb-1">Interface Systems</h3>
-                            <p class="text-zinc-500 text-sm">Product Design & E-commerce</p>
-                        </div>
-                        <span class="text-[10px] font-bold text-primary px-3 py-1 bg-primary/10 rounded-full">2023</span>
-                    </div>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="project-card group cursor-pointer">
-                    <div class="aspect-[4/5] bg-zinc-100 dark:bg-zinc-900 rounded-2xl overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200" class="project-image w-full h-full object-cover transition-transform duration-1000 grayscale group-hover:grayscale-0">
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-                            <span class="text-white text-xs font-bold uppercase tracking-widest border border-white/30 px-6 py-3 rounded-full backdrop-blur-md">View Creative</span>
-                        </div>
-                    </div>
-                    <div class="mt-8 flex justify-between items-start">
-                        <div>
-                            <h3 class="text-2xl font-bold tracking-tight mb-1">Abstract Compositions</h3>
-                            <p class="text-zinc-500 text-sm">Digital Art & Experiments</p>
-                        </div>
-                        <span class="text-[10px] font-bold text-primary px-3 py-1 bg-primary/10 rounded-full">2024</span>
-                    </div>
-                </div>
-
-                <!-- QR Card / Drive -->
-                <div class="project-card group cursor-pointer md:mt-24">
-                    <a href="https://drive.google.com/drive/folders/1Ytya_Zx43alhJpllv-MUjM9GBDPetQ6X" target="_blank" class="block">
-                        <div class="aspect-[4/5] bg-white dark:bg-zinc-800 rounded-2xl flex items-center justify-center p-12 relative overflow-hidden">
-                            <div class="absolute inset-0 bg-primary/5 -z-10 group-hover:scale-110 transition-transform duration-700"></div>
-                            <img src="QRPROJ.png" alt="Scan" class="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-500" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://drive.google.com/drive/folders/1Ytya_Zx43alhJpllv-MUjM9GBDPetQ6X'">
-                        </div>
-                        <div class="mt-8">
-                            <h3 class="text-2xl font-bold tracking-tight mb-1 italic font-serif">Open Archive</h3>
-                            <p class="text-zinc-500 text-sm">Full Portfolio Access (Cloud Drive)</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact -->
-    <section id="contact" class="py-32 px-6 md:px-12 bg-zinc-900 text-white overflow-hidden relative">
-        <div class="absolute top-0 right-0 w-[60vw] h-[60vw] bg-primary/5 blur-[150px] -z-0"></div>
-        
-        <div class="max-w-7xl mx-auto relative z-10">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-20">
-                <div>
-                    <h2 class="text-sm uppercase tracking-[0.5em] text-primary font-bold mb-10">Let's Talk</h2>
-                    <p class="text-5xl md:text-7xl font-bold tracking-tighter leading-[0.9] mb-12">
-                        READY TO <br> <span class="font-serif italic text-zinc-500">ELEVATE?</span>
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-12">
+                <div class="max-w-xl">
+                    <p class="text-lg md:text-2xl font-medium text-zinc-500 dark:text-zinc-400 leading-tight mb-8">
+                        Ritivik Kumar crafts high-performance digital identities that balance <span class="text-zinc-900 dark:text-white">technical precision</span> with <span class="text-zinc-900 dark:text-white italic">emotional resonance</span>.
                     </p>
-                    <div class="space-y-6">
-                        <a href="mailto:ritivik.org@gmail.com" class="block text-2xl font-light hover:text-primary transition">ritivik.org@gmail.com</a>
-                        <a href="tel:+917061978295" class="block text-2xl font-light hover:text-primary transition">+91 70619 78295</a>
+                    <div class="flex gap-4">
+                        <a href="#work" class="btn-hover px-10 py-5 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-2xl text-xs font-bold uppercase tracking-widest flex items-center gap-3">
+                            Selected Works
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17l10-10M7 7h10v10"/></svg>
+                        </a>
                     </div>
                 </div>
 
-                <form id="contact-form" class="space-y-8 bg-zinc-800/50 p-8 md:p-12 rounded-3xl backdrop-blur-xl border border-white/5">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="space-y-2">
-                            <label class="text-[10px] uppercase tracking-widest text-zinc-500">Name</label>
-                            <input type="text" name="Name" required class="w-full bg-transparent border-b border-zinc-700 py-3 focus:outline-none focus:border-primary transition-colors text-lg font-light">
+                <!-- Floating Abstract Element -->
+                <div class="hidden lg:block w-64 h-64 relative animate-float">
+                    <div class="absolute inset-0 bg-primary/20 rounded-full blur-3xl"></div>
+                    <div class="w-full h-full border border-zinc-200 dark:border-zinc-800 rounded-3xl rotate-12 backdrop-blur-sm flex items-center justify-center">
+                        <span class="font-serif text-6xl italic opacity-20">RK</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Background Ambient Light -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full -z-10 pointer-events-none opacity-40 dark:opacity-20">
+            <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/30 blur-[120px] rounded-full"></div>
+            <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/10 blur-[120px] rounded-full"></div>
+        </div>
+    </header>
+
+    <!-- Bento About Section -->
+    <section id="about" class="py-32 px-6 md:px-12">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col mb-16">
+                <span class="text-primary text-xs font-bold uppercase tracking-widest mb-4">The Designer</span>
+                <h2 class="font-display text-4xl md:text-6xl font-bold tracking-tight">Strategy meets Soul.</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-4 h-full md:h-[600px]">
+                <!-- Bio -->
+                <div class="md:col-span-2 md:row-span-2 bg-zinc-100 dark:bg-zinc-900/50 p-10 rounded-[2.5rem] flex flex-col justify-between border border-transparent hover:border-zinc-200 dark:hover:border-zinc-800 transition-all group">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-6 font-display">Philosophy</h3>
+                        <p class="text-xl text-zinc-500 dark:text-zinc-400 leading-relaxed font-medium">
+                            I don't just build layouts; I build systems. My approach merges the logic of a B.Tech background with the creative intuition of a visual artist. Based in Patna, working globally.
+                        </p>
+                    </div>
+                    <div class="pt-8">
+                        <div class="flex -space-x-3 mb-4">
+                            <div class="w-12 h-12 rounded-full border-4 border-light dark:border-dark bg-zinc-200"></div>
+                            <div class="w-12 h-12 rounded-full border-4 border-light dark:border-dark bg-zinc-300"></div>
+                            <div class="w-12 h-12 rounded-full border-4 border-light dark:border-dark bg-primary flex items-center justify-center text-[10px] font-bold">+12</div>
                         </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] uppercase tracking-widest text-zinc-500">Email</label>
-                            <input type="email" name="Email" required class="w-full bg-transparent border-b border-zinc-700 py-3 focus:outline-none focus:border-primary transition-colors text-lg font-light">
+                        <p class="text-xs uppercase tracking-widest font-bold text-zinc-400">Global Partners Trusted</p>
+                    </div>
+                </div>
+
+                <!-- Experience Card -->
+                <div class="bg-zinc-100 dark:bg-zinc-900/50 p-8 rounded-[2rem] border border-transparent hover:border-zinc-200 dark:hover:border-zinc-800 transition-all">
+                    <span class="text-primary text-4xl font-display font-black mb-2 block">1.5+</span>
+                    <span class="text-sm font-bold uppercase tracking-widest">Years of Craft</span>
+                </div>
+
+                <!-- Skills -->
+                <div class="bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 p-8 rounded-[2rem] flex flex-col justify-center">
+                    <ul class="space-y-2 text-xs font-bold uppercase tracking-widest">
+                        <li class="flex items-center gap-2"><div class="w-1 h-1 bg-primary rounded-full"></div> Identity Design</li>
+                        <li class="flex items-center gap-2"><div class="w-1 h-1 bg-primary rounded-full"></div> UI/UX Architecture</li>
+                        <li class="flex items-center gap-2"><div class="w-1 h-1 bg-primary rounded-full"></div> Interaction Design</li>
+                    </ul>
+                </div>
+
+                <!-- Location/Status -->
+                <div class="md:col-span-2 bg-primary p-10 rounded-[2.5rem] flex items-center justify-between relative overflow-hidden group">
+                    <div class="relative z-10">
+                        <span class="block text-zinc-900/60 text-xs font-bold uppercase tracking-widest mb-1">Current Availability</span>
+                        <h3 class="text-2xl font-display font-bold text-zinc-900">Open for new projects<br>for Q1 2024</h3>
+                    </div>
+                    <div class="w-16 h-16 bg-zinc-900 rounded-full flex items-center justify-center text-white shrink-0 group-hover:rotate-45 transition-transform">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </div>
+                    <div class="absolute -right-10 -bottom-10 text-[10rem] font-black text-black/5 select-none font-display">HIRE</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Work Showcase -->
+    <section id="work" class="py-32 px-6 md:px-12 bg-white dark:bg-zinc-950">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-24">
+                <div class="max-w-2xl">
+                    <span class="text-primary text-xs font-bold uppercase tracking-widest mb-4 block">Portfolio</span>
+                    <h2 class="font-display text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-none">Crafting the <span class="font-serif italic text-zinc-400">Future</span> of Brands.</h2>
+                </div>
+                <div class="text-right hidden md:block">
+                    <p class="text-xs uppercase tracking-widest font-bold text-zinc-500 mb-2">Ref. Index 01-04</p>
+                    <div class="w-32 h-1 bg-zinc-100 dark:bg-zinc-900 rounded-full overflow-hidden">
+                        <div class="w-1/3 h-full bg-primary"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-32">
+                <!-- Project 1 -->
+                <div class="group cursor-pointer">
+                    <div class="aspect-[16/10] bg-zinc-100 dark:bg-zinc-900 rounded-[2.5rem] overflow-hidden relative mb-8">
+                        <img src="https://images.unsplash.com/photo-1634942537034-2531766767d1?q=80&w=1200" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white/20 backdrop-blur-xl border border-white/30 rounded-full flex items-center justify-center text-white font-bold text-xs uppercase tracking-tighter scale-50 group-hover:scale-100 transition-transform duration-500">View</div>
                         </div>
                     </div>
-                    <div class="space-y-2">
-                        <label class="text-[10px] uppercase tracking-widest text-zinc-500">Project Type</label>
-                        <input type="text" name="Subject" required class="w-full bg-transparent border-b border-zinc-700 py-3 focus:outline-none focus:border-primary transition-colors text-lg font-light" placeholder="Branding, UI/UX, etc.">
+                    <div class="flex justify-between items-start px-4">
+                        <div>
+                            <span class="text-[10px] uppercase tracking-widest font-bold text-zinc-400 mb-2 block">Branding • 2024</span>
+                            <h3 class="text-3xl font-display font-bold">NEO-SYSTEMS</h3>
+                        </div>
+                        <div class="w-10 h-10 border border-zinc-200 dark:border-zinc-800 rounded-full flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-colors">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17l10-10M7 7h10v10"/></svg>
+                        </div>
                     </div>
-                    <div class="space-y-2">
-                        <label class="text-[10px] uppercase tracking-widest text-zinc-500">Message</label>
-                        <textarea name="Message" rows="4" required class="w-full bg-transparent border-b border-zinc-700 py-3 focus:outline-none focus:border-primary transition-colors text-lg font-light resize-none"></textarea>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="group cursor-pointer md:mt-32">
+                    <div class="aspect-[16/10] bg-zinc-100 dark:bg-zinc-900 rounded-[2.5rem] overflow-hidden relative mb-8">
+                        <img src="https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=1200" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white/20 backdrop-blur-xl border border-white/30 rounded-full flex items-center justify-center text-white font-bold text-xs uppercase tracking-tighter scale-50 group-hover:scale-100 transition-transform duration-500">View</div>
+                        </div>
                     </div>
-                    
-                    <button type="submit" id="submit-btn" class="w-full py-5 bg-primary text-zinc-900 rounded-full font-bold uppercase text-[11px] tracking-[0.3em] hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20">
-                        Send Inquiry
-                    </button>
-                    <div id="form-msg" class="text-center text-[10px] uppercase tracking-widest hidden mt-4"></div>
-                </form>
+                    <div class="flex justify-between items-start px-4">
+                        <div>
+                            <span class="text-[10px] uppercase tracking-widest font-bold text-zinc-400 mb-2 block">UI Design • 2023</span>
+                            <h3 class="text-3xl font-display font-bold">ARCADE FLOW</h3>
+                        </div>
+                        <div class="w-10 h-10 border border-zinc-200 dark:border-zinc-800 rounded-full flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-colors">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17l10-10M7 7h10v10"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Professional Contact -->
+    <section id="contact" class="py-32 px-6 md:px-12 bg-zinc-900 text-white overflow-hidden relative rounded-t-[4rem]">
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+                <div>
+                    <span class="text-primary text-xs font-bold uppercase tracking-[0.5em] mb-8 block">Inquiries</span>
+                    <h2 class="font-display text-6xl md:text-8xl font-black leading-none tracking-tighter mb-10">
+                        LET'S <br> BUILD <br> IT<span class="text-primary">.</span>
+                    </h2>
+                    <div class="space-y-6">
+                        <p class="text-zinc-500 text-lg max-w-sm">Have a vision that needs clarity? Send a transmission and let's define the next chapter.</p>
+                        <div class="flex flex-col gap-4">
+                            <a href="mailto:ritivik.org@gmail.com" class="text-2xl font-display font-bold hover:text-primary transition inline-flex items-center gap-4">
+                                ritivik.org@gmail.com
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white/5 backdrop-blur-3xl p-10 md:p-14 rounded-[3rem] border border-white/10">
+                    <form id="contact-form" class="space-y-10">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                            <div class="group relative">
+                                <label class="text-[10px] uppercase font-bold tracking-widest text-zinc-500 transition-colors group-focus-within:text-primary">Your Identity</label>
+                                <input type="text" name="Name" required class="w-full bg-transparent border-b-2 border-zinc-800 py-4 focus:outline-none focus:border-primary transition-colors text-lg font-medium">
+                            </div>
+                            <div class="group relative">
+                                <label class="text-[10px] uppercase font-bold tracking-widest text-zinc-500 transition-colors group-focus-within:text-primary">Electronic Mail</label>
+                                <input type="email" name="Email" required class="w-full bg-transparent border-b-2 border-zinc-800 py-4 focus:outline-none focus:border-primary transition-colors text-lg font-medium">
+                            </div>
+                        </div>
+                        <div class="group relative">
+                            <label class="text-[10px] uppercase font-bold tracking-widest text-zinc-500 transition-colors group-focus-within:text-primary">The Concept (Subject)</label>
+                            <input type="text" name="Subject" required class="w-full bg-transparent border-b-2 border-zinc-800 py-4 focus:outline-none focus:border-primary transition-colors text-lg font-medium">
+                        </div>
+                        <div class="group relative">
+                            <label class="text-[10px] uppercase font-bold tracking-widest text-zinc-500 transition-colors group-focus-within:text-primary">Details</label>
+                            <textarea name="Message" rows="3" required class="w-full bg-transparent border-b-2 border-zinc-800 py-4 focus:outline-none focus:border-primary transition-colors text-lg font-medium resize-none"></textarea>
+                        </div>
+                        
+                        <button type="submit" id="submit-btn" class="group w-full py-6 bg-primary text-zinc-900 rounded-[2rem] font-black uppercase text-xs tracking-widest hover:bg-white transition-all duration-500 flex items-center justify-center gap-4">
+                            TRANSMIT MESSAGE
+                            <svg class="group-hover:translate-x-1 transition-transform" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </button>
+                        <p id="form-msg" class="text-center text-[10px] uppercase tracking-widest hidden mt-4"></p>
+                    </form>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="py-12 px-6 md:px-12 border-t border-zinc-200 dark:border-zinc-800 flex flex-col md:flex-row justify-between items-center gap-8">
-        <p class="text-[10px] uppercase tracking-widest text-zinc-400">
-            &copy; <script>document.write(new Date().getFullYear());</script> RITIVIK KUMAR • BIHAR, INDIA
-        </p>
-        <div class="flex gap-10">
-            <a href="https://www.linkedin.com/in/ritivik.art/" class="text-[10px] uppercase tracking-widest hover:text-primary transition font-bold">LinkedIn</a>
-            <a href="https://www.instagram.com/ritivik.art/" class="text-[10px] uppercase tracking-widest hover:text-primary transition font-bold">Instagram</a>
-            <a href="#" class="text-[10px] uppercase tracking-widest hover:text-primary transition font-bold">Behance</a>
+    <footer class="py-20 px-6 md:px-12 flex flex-col items-center">
+        <div class="max-w-7xl w-full border-t border-zinc-200 dark:border-zinc-800 pt-12 flex flex-col md:flex-row justify-between items-center gap-10">
+            <div class="flex flex-col items-center md:items-start">
+                <span class="font-display font-black text-2xl tracking-tighter">RK<span class="text-primary">.</span></span>
+                <p class="text-[10px] uppercase tracking-widest text-zinc-400 mt-2">&copy; <script>document.write(new Date().getFullYear());</script> DESIGNED IN BIHAR • SERVING THE WEB</p>
+            </div>
+            
+            <div class="flex gap-10">
+                <a href="https://www.linkedin.com/in/ritivik.art/" class="text-xs font-bold uppercase tracking-widest hover:text-primary transition underline decoration-primary/30 underline-offset-8">LinkedIn</a>
+                <a href="https://www.instagram.com/ritivik.art/" class="text-xs font-bold uppercase tracking-widest hover:text-primary transition underline decoration-primary/30 underline-offset-8">Instagram</a>
+                <a href="#" class="text-xs font-bold uppercase tracking-widest hover:text-primary transition underline decoration-primary/30 underline-offset-8">Behance</a>
+            </div>
         </div>
     </footer>
 
     <script>
+        // --- Custom Cursor Logic ---
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        document.querySelectorAll('a, button, .group').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.style.transform = 'scale(2.5)');
+            el.addEventListener('mouseleave', () => cursor.style.transform = 'scale(1)');
+        });
+
         // --- Theme Logic ---
         const themeToggleBtn = document.getElementById('theme-toggle');
-        const mobileThemeToggleBtn = document.getElementById('mobile-theme-toggle');
         const darkIcon = document.getElementById('theme-toggle-dark-icon');
         const lightIcon = document.getElementById('theme-toggle-light-icon');
 
@@ -352,7 +399,6 @@
             updateThemeIcons();
         }
 
-        // Init Theme
         if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
@@ -360,61 +406,19 @@
         }
 
         themeToggleBtn.addEventListener('click', toggleTheme);
-        mobileThemeToggleBtn.addEventListener('click', toggleTheme);
-        window.onload = () => {
-            updateThemeIcons();
-            startTyping();
-        };
+        window.onload = updateThemeIcons;
 
-        // --- Mobile Menu ---
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-            document.body.style.overflow = menu.classList.contains('hidden') ? 'auto' : 'hidden';
-        }
-
-        // --- Typing Effect ---
-        const phrases = ["Functional Design", "Memorable Identity", "Dynamic Experiences", "Bold Storytelling"];
-        let pIdx = 0;
-        let cIdx = 0;
-        let isDeleting = false;
-        const typingEl = document.getElementById('typing');
-
-        function startTyping() {
-            const current = phrases[pIdx];
-            if (isDeleting) {
-                typingEl.textContent = current.substring(0, cIdx - 1);
-                cIdx--;
-            } else {
-                typingEl.textContent = current.substring(0, cIdx + 1);
-                cIdx++;
-            }
-
-            let speed = isDeleting ? 40 : 100;
-
-            if (!isDeleting && cIdx === current.length) {
-                isDeleting = true;
-                speed = 2000; // Pause at end
-            } else if (isDeleting && cIdx === 0) {
-                isDeleting = false;
-                pIdx = (pIdx + 1) % phrases.length;
-                speed = 500;
-            }
-
-            setTimeout(startTyping, speed);
-        }
-
-        // --- Scroll Effects ---
+        // --- Scroll Nav ---
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('nav');
             if (window.scrollY > 50) {
-                nav.classList.add('bg-light/80', 'dark:bg-dark/80', 'backdrop-blur-xl', 'py-4', 'border-b', 'border-zinc-200/50', 'dark:border-zinc-800/50');
+                nav.classList.add('py-4');
             } else {
-                nav.classList.remove('bg-light/80', 'dark:bg-dark/80', 'backdrop-blur-xl', 'py-4', 'border-b', 'border-zinc-200/50', 'dark:border-zinc-800/50');
+                nav.classList.remove('py-4');
             }
         });
 
-        // --- Form Submission ---
+        // --- Form Submission (Google Script) ---
         const form = document.getElementById('contact-form');
         const btn = document.getElementById('submit-btn');
         const msg = document.getElementById('form-msg');
@@ -423,27 +427,26 @@
         form.addEventListener('submit', e => {
             e.preventDefault();
             btn.disabled = true;
-            btn.textContent = 'TRANSMITTING...';
+            btn.innerHTML = 'TRANSMITTING...';
             
             const data = new URLSearchParams(new FormData(form));
             data.append('Date', new Date().toLocaleDateString());
-            data.append('Time', new Date().toLocaleTimeString());
 
             fetch(scriptURL, { method: 'POST', body: data })
                 .then(() => {
-                    msg.textContent = 'Message Received. Expect a reply soon.';
-                    msg.classList.remove('hidden');
+                    msg.textContent = 'Transmission Success. Expect a reply.';
+                    msg.classList.remove('hidden', 'text-red-500');
                     msg.classList.add('text-primary');
                     form.reset();
                 })
                 .catch(() => {
-                    msg.textContent = 'Submission error. Try emailing directly.';
-                    msg.classList.remove('hidden');
+                    msg.textContent = 'System Error. Try direct mail.';
+                    msg.classList.remove('hidden', 'text-primary');
                     msg.classList.add('text-red-500');
                 })
                 .finally(() => {
                     btn.disabled = false;
-                    btn.textContent = 'Send Inquiry';
+                    btn.innerHTML = 'TRANSMIT MESSAGE';
                 });
         });
     </script>
